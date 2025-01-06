@@ -6,7 +6,7 @@ import socket
 import json
 
 
-# Set up your credentials
+# Set up your credentials or manage it via environment variables in git
 consumer_key=''
 consumer_secret=''
 access_token =''
