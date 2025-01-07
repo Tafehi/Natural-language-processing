@@ -17,9 +17,26 @@ This project aims to deploy a Hugging Face model on AWS SageMaker using custom i
 
 ## Directory Structure
 
+
 aws/: Contains Terraform code for setting up AWS SageMaker infrastructure.
 
 Docker/: Contains the Dockerfile, Python code, and requirements.txt for the Hugging Face model.
+
+The whole pipeline is illustrated as ![git_pipeline](git_pipeline.png)
+
+.
+├── Docker
+│   ├── Dockerfile
+│   ├── huggingface.py
+│   └── requirements.txt
+├── README.md
+├── aws
+│   ├── backend.tf
+│   ├── data.tf
+│   ├── provider.tf
+│   ├── sagemaker.tf
+│   └── variable.tf
+└── git_pipeline.png
 
 ## Setup
 
