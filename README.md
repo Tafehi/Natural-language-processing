@@ -30,6 +30,16 @@ This repository contains three different projects, each demonstrating the power 
      - Sentiment analysis on live tweets
      - Visualization of tweet trends
 
+4. **Hugging Face**
+   - **Description**: This project utilizes the powerful capabilities of the Hugging Face Transformers library to create and fine-tune state-of-the-art models for natural language processing (NLP) tasks.
+   - **Features**:
+     - Model Training & Fine-Tuning: Train and fine-tune various transformer models, including BERT, GPT-3, and RoBERTa.
+     - Data Processing: Efficiently process and prepare datasets for training, including tokenization and augmentation.
+     - Custom Tasks: Implement custom tasks such as text classification, named entity recognition, and question answering.
+     - Inference Pipeline: Create robust pipelines for model inference to seamlessly integrate with applications.
+     - Evaluation Metrics: Utilize comprehensive evaluation metrics to analyze and improve model performance.
+     - API Integration: Simple and effective integration with APIs for deploying models in production environments.
+
 ## Installation
 
 To get started, clone this repository:
