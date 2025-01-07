@@ -8,7 +8,7 @@ variable "bucket" {
   default = {
     dev = "dev-sagmemaker"
     test = "test-sagemaker"
-    uat = "test-sagemaker"
+    uat = "uat-sagemaker"
     prod = "prod-sagemaker"
   }
 }
