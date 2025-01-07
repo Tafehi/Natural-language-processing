@@ -1,6 +1,6 @@
 
 provider "aws" {
-  region = "eu-west-1"
+  region = "eu-north-1"
   default_tags {
     tags = {
       CreatedBy   = "Terraform"
