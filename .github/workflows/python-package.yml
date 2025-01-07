@@ -14,7 +14,7 @@ jobs:
       AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
       AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
       AWS_DEFAULT_REGION: ${{ secrets.AWS_DEFAULT_REGION }}
-      TF_VAR_Environment: ${{ github.ref == 'refs/heads/dev' && 'dev' || github.ref == 'refs/heads/main' && 'prod' || github.ref == 'refs/heads/staging' && 'staging' }}
+      TF_VAR_ENVIRONMENT: ${{ github.ref == 'refs/heads/dev' && 'dev' || github.ref == 'refs/heads/main' && 'prod' || github.ref == 'refs/heads/staging' && 'staging' }}
 
     steps:
       - name: Checkout repository
@@ -25,10 +25,11 @@ jobs:
 
       - name: Select or Create Terraform Workspace
         run: |
-          ls -al
           cd HuggingFace/aws/
-          terraform workspace select ${{ github.ref == 'refs/heads/dev' && 'dev' || github.ref == 'refs/heads/main' && 'prod' || github.ref == 'refs/heads/staging' && 'staging' }} || \
-          terraform workspace new ${{ github.ref == 'refs/heads/dev' && 'dev' || github.ref == 'refs/heads/main' && 'prod' || github.ref == 'refs/heads/staging' && 'staging' }}
+          echo "Terraform workspace: $TF_VAR_ENVIRONMENT"
+          echo "AWS_ACCESS_KEY_ID: $AWS_ACCESS_KEY_ID"
+          WORKSPACE_NAME=${{ github.ref == 'refs/heads/dev' && 'dev' || github.ref == 'refs/heads/main' && 'prod' || github.ref == 'refs/heads/staging' && 'staging' }}
+          terraform workspace select $WORKSPACE_NAME || terraform workspace new $WORKSPACE_NAME
 
       - name: Terraform Init and Plan
         run: |
