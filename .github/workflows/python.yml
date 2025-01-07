@@ -1,11 +1,19 @@
 name: Terraform and Docker
 
+
+
 on:
   push:
     branches:
       - main
       - dev
       - staging
+  pull_request:
+      branches:
+        - main
+        - dev
+        - staging
+  workflow_dispatch:
 
 env:
   AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
@@ -32,7 +40,7 @@ jobs:
           cd HuggingFace/aws/
           WORKSPACE_NAME=${{ github.ref == 'refs/heads/dev' && 'dev' || github.ref == 'refs/heads/main' && 'prod' || github.ref == 'refs/heads/staging' && 'staging' }}
           echo "Terraform workspace: $WORKSPACE_NAME"
-          echo "AWS_REGION: $AWS_DEFAULT_REGION"
+          echo "AWS_DEFAULT_REGION: $AWS_DEFAULT_REGION"
           terraform workspace select $WORKSPACE_NAME || terraform workspace new $WORKSPACE_NAME
         continue-on-error: true
 
@@ -56,7 +64,7 @@ jobs:
           terraform destroy -auto-approve
         continue-on-error: true
 
-  build_and_tag_docker:
+  docker_build_and_tag:
     runs-on: ubuntu-latest
     continue-on-error: true
     steps:
@@ -81,7 +89,7 @@ jobs:
             docker push ${{ secrets.DOCKER_HUB_USERNAME}}/huggingface:${{ github.sha }}
         continue-on-error: true
 
-  push_docker:
+  docker_push_aws_ecr:
     runs-on: ubuntu-latest
     needs: [terraform, build_and_tag_docker]
     continue-on-error: true
