@@ -1,15 +1,24 @@
-# Use an official Python runtime as a base image
-FROM python:3.8-slim
+# Use the base image
+FROM python:3.10-slim-bookworm
 
-# Set the working directory to /app
+# Set environment variables to avoid prompts during package installation
+ENV DEBIAN_FRONTEND=noninteractive
+
+# Update system and install necessary packages
+RUN apt-get update && apt-get upgrade -y && \
+    apt-get install -y --no-install-recommends \
+    build-essential \
+    curl \
+    && rm -rf /var/lib/apt/lists/*
+
+# Set the working directory
 WORKDIR /app
 
 # Copy the current directory contents into the container at /app
 COPY . /app
 
-# Install TensorFlow and any other needed packages specified in requirements.txt
-RUN pip install --no-cache-dir tensorflow && \
-    pip install --no-cache-dir -r requirements.txt
+# Install packages specified in requirements.txt
+RUN pip install --no-cache-dir -r requirements.txt
 
 # Make port 80 available to the world outside this container
 EXPOSE 80
@@ -18,4 +27,4 @@ EXPOSE 80
 ENV NAME HuggingFaceApp
 
 # Run the application
-CMD ["python", "llm/your_script.py"]
+CMD ["python", "huggingface.py"]
