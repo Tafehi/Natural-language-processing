@@ -1,6 +1,5 @@
 name: Terraform and Docker
 
-
 on:
   push:
     branches:
@@ -29,66 +28,71 @@ jobs:
 
       - name: Set up Terraform
         uses: hashicorp/setup-terraform@v1
-       
+
+      - name: Initialize Terraform
+        run: |
+          cd HuggingFace/aws/
+          terraform init -reconfigure
 
       - name: Select or Create Terraform Workspace
         run: |
+          cd HuggingFace/aws/
           WORKSPACE_NAME=${{ github.ref == 'refs/heads/dev' && 'dev' || github.ref == 'refs/heads/main' && 'prod' || github.ref == 'refs/heads/staging' && 'staging' }}
           echo "Terraform workspace: $WORKSPACE_NAME"
           echo "AWS_DEFAULT_REGION: $AWS_DEFAULT_REGION"
           terraform workspace select $WORKSPACE_NAME || terraform workspace new $WORKSPACE_NAME
-       
 
-      - name: Terraform Init 
+      - name: Terraform Init and Plan
         run: |
           cd HuggingFace/aws/
-          WORKSPACE_NAME=${{ github.ref == 'refs/heads/dev' && 'dev' || github.ref == 'refs/heads/main' && 'prod' || github.ref == 'refs/heads/staging' && 'staging' }}
-          terraform workspace select $WORKSPACE_NAME || terraform workspace new $WORKSPACE_NAME
-          terraform init -reconfigure 
-          
-     
-      - name: Terraform Plan
-        run: |
-          cd HuggingFace/aws
-          terraform validate
-          terraform plan -out "terraform.tfplan"
+          terraform init && terraform plan
 
-      - name: Upload terraform plan
-        uses: actions/upload-artifact@v3
-        with:
-          name: terraform-plan
-          path: HuggingFace/aws/
-      
-      - name: Terraform Apply
-        if: github.event_name == 'push'
-        run: |
-          cd HuggingFace/aws
-          terraform apply -auto-approve
-        
-        
-
-  docker_build_and_tag:
+  terraform_apply:
     runs-on: ubuntu-latest
-    # needs: [terraform]
+    needs: terraform
+    if: github.event_name == 'workflow_dispatch'
     steps:
       - name: Checkout repository
         uses: actions/checkout@v2
 
+      - name: Terraform Apply
+        run: |
+          cd HuggingFace/aws
+          terraform apply -auto-approve
+
+  terraform_destroy:
+    runs-on: ubuntu-latest
+    needs: terraform
+    if: github.event_name == 'workflow_dispatch' && github.ref == 'refs/heads/main'
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v2
+
+      - name: Terraform Destroy
+        run: |
+          cd HuggingFace/aws
+          terraform destroy -auto-approve
+
+  docker_build_and_tag:
+    runs-on: ubuntu-latest
+    continue-on-error: true
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v2
 
       - name: Log in to Docker Hub
         run: echo "${{ secrets.DOCKER_HUB_ACCESS_TOKEN }}" | docker login -u "${{ secrets.DOCKER_HUB_USERNAME }}" --password-stdin
-  
+
       - name: Build and tag Docker image
         run: |
             cd HuggingFace/Docker/
             docker build -t ${{ secrets.DOCKER_HUB_USERNAME}}/huggingface:latest .
             docker tag ${{ secrets.DOCKER_HUB_USERNAME }}/huggingface:latest ${{ secrets.DOCKER_HUB_USERNAME }}/mysqlrestapi:${{ github.sha }}
-  
+
       - name: Push Docker image to Docker Hub
         run: |
-            docker push ${{ secrets.DOCKER_HUB_USERNAME}}/huggingface:latest
+            docker push --all-tags ${{ secrets.DOCKER_HUB_USERNAME}}/huggingface:latest
             docker push ${{ secrets.DOCKER_HUB_USERNAME}}/huggingface:${{ github.sha }}
-        
 
   docker_push_aws_ecr:
     runs-on: ubuntu-latest
@@ -108,9 +112,3 @@ jobs:
         run: |
           docker push ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.${{ secrets.AWS_DEFAULT_REGION }}.amazonaws.com/${{ secrets.ECR_REPOSITORY }}:latest
         continue-on-error: true
-
-
-
-
-
-
