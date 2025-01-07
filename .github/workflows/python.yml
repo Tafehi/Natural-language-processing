@@ -32,6 +32,7 @@ jobs:
           cd HuggingFace/aws/
           WORKSPACE_NAME=${{ github.ref == 'refs/heads/dev' && 'dev' || github.ref == 'refs/heads/main' && 'prod' || github.ref == 'refs/heads/staging' && 'staging' }}
           echo "Terraform workspace: $WORKSPACE_NAME"
+          echo "AWS_REGION: $AWS_DEFAULT_REGION"
           terraform workspace select $WORKSPACE_NAME || terraform workspace new $WORKSPACE_NAME
         continue-on-error: true
 
