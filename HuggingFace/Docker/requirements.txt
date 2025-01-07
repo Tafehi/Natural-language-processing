@@ -1,0 +1,6 @@
+transformers
+ctransformers
+gradio
+protobuf
+scipy
+tensorflow==2.14.0

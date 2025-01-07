@@ -71,13 +71,14 @@ jobs:
   
       - name: Build and tag Docker image
         run: |
-            docker build -t ${{ secrets.DOCKER_HUB_USERNAME}}/mysqlrestapi:latest .
-            docker tag ${{ secrets.DOCKER_HUB_USERNAME }}/mysqlrestapi:latest ${{ secrets.DOCKER_HUB_USERNAME }}/mysqlrestapi:${{ github.sha }}
+            cd Docker/
+            docker build -t ${{ secrets.DOCKER_HUB_USERNAME}}/huggingface:latest .
+            docker tag ${{ secrets.DOCKER_HUB_USERNAME }}/huggingface:latest ${{ secrets.DOCKER_HUB_USERNAME }}/mysqlrestapi:${{ github.sha }}
   
       - name: Push Docker image to Docker Hub
         run: |
-            docker push ${{ secrets.DOCKER_HUB_USERNAME}}/mysqlrestapi:latest
-            docker push ${{ secrets.DOCKER_HUB_USERNAME}}/mysqlrestapi:${{ github.sha }}
+            docker push ${{ secrets.DOCKER_HUB_USERNAME}}/huggingface:latest
+            docker push ${{ secrets.DOCKER_HUB_USERNAME}}/huggingface:${{ github.sha }}
 
   push_docker:
     runs-on: ubuntu-latest
