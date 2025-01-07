@@ -12,3 +12,7 @@ variable "bucket" {
     prod = "prod-sagemaker"
   }
 }
+
+variable "image" {
+  default = "huggingface"
+}

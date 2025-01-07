@@ -2,7 +2,7 @@ resource "aws_sagemaker_model" "customHuggingface" {
   name = var.name
   execution_role_arn = aws_iam_role.sagemaker_role.arn
   primary_container {
-    image          = "<YOUR_ACCOUNT>.dkr.ecr.<REGION>.amazonaws.com/<REPO>:<TAG>"
+    image          = "${data.aws_caller_identity.current.account_id}.dkr.ecr.${data.aws_region.current.name}.amazonaws.com/${var.image}:latest"
     model_data_url = "s3://${lookup(var.bucket, terraform.workspace)}/NLP/model.tar.gz"
   }
 }
@@ -48,7 +48,7 @@ data "aws_iam_policy_document" "InferenceAcess" {
       "ecr:InitiateLayerUpload",
     ]
 
-    resources = ["<YOUR_ECR>"]
+    resources = ["${data.aws_caller_identity.current.account_id}.dkr.ecr.${data.aws_region.current.name}.amazonaws.com/${var.image}:latest"]
   }
   statement {
     resources = ["*"]
@@ -68,7 +68,7 @@ resource "aws_iam_policy" "InferenceAcess" {
 }
 
 resource "aws_iam_role_policy_attachment" "InferenceAcess" {
-  role       = aws_iam_role.yourRole.name
+  role       = aws_iam_role.sagemaker_role.name
   policy_arn = aws_iam_policy.InferenceAcess.arn
 }
 resource "aws_sagemaker_endpoint_configuration" "customHuggingface" {
