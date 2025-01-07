@@ -45,6 +45,7 @@ jobs:
           WORKSPACE_NAME=${{ github.ref == 'refs/heads/dev' && 'dev' || github.ref == 'refs/heads/main' && 'prod' || github.ref == 'refs/heads/staging' && 'staging' }}
           terraform workspace select $WORKSPACE_NAME || terraform workspace new $WORKSPACE_NAME
           terraform init -reconfigure 
+          
      
       - name: Terraform Plan
         run: |
