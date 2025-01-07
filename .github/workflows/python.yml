@@ -40,11 +40,23 @@ jobs:
           terraform workspace select $WORKSPACE_NAME || terraform workspace new $WORKSPACE_NAME
        
 
-      - name: Terraform Init and Plan
+      - name: Terraform Init 
         run: |
           cd HuggingFace/aws/
-          terraform init && terraform plan
+          terraform init -reconfigure && terraform plan
      
+      - name: Terraform Plan
+        run: |
+          cd HuggingFace/aws
+          terraform validate
+          terraform plan -out "terraform.tfplan"
+
+      - name: Upload terraform plan
+        uses: actions/upload-artifact@v3
+        with:
+          name: terraform-plan
+          path: HuggingFace/aws/
+      
 
       - name: Terraform Apply
         run: |
