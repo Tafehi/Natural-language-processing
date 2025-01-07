@@ -26,25 +26,25 @@ jobs:
       - name: Select or Create Terraform Workspace
         run: |
           ls -al
-          cd Natural-language-processing/HuggingFace/aws/
+          cd HuggingFace/aws/
           terraform workspace select ${{ github.ref == 'refs/heads/dev' && 'dev' || github.ref == 'refs/heads/main' && 'prod' || github.ref == 'refs/heads/staging' && 'staging' }} || \
           terraform workspace new ${{ github.ref == 'refs/heads/dev' && 'dev' || github.ref == 'refs/heads/main' && 'prod' || github.ref == 'refs/heads/staging' && 'staging' }}
 
       - name: Terraform Init and Plan
         run: |
-          cd Natural-language-processing/HuggingFace/aws/
+          cd HuggingFace/aws/
           terraform init && terraform plan
 
       - name: Terraform Apply
         if: github.event_name == 'push'
         run: |
-          cd Natural-language-processing/HuggingFace/aws
+          cd HuggingFace/aws
           terraform apply -auto-approve
 
       - name: Terraform Destroy
         if: github.event_name == 'push' && github.ref == 'refs/heads/main'
         run: |
-          cd Natural-language-processing/HuggingFace/aws
+          cd HuggingFace/aws
           terraform destroy -auto-approve
 
   build_and_tag_docker:
