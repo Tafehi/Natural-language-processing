@@ -40,6 +40,9 @@ This repository contains three different projects, each demonstrating the power 
      - Evaluation Metrics: Utilize comprehensive evaluation metrics to analyze and improve model performance.
      - API Integration: Simple and effective integration with APIs for deploying models in production environments.
 
+For more details please look at [HuggingFace/README.md](https://github.com/Tafehi/Natural-language-processing/blob/main/HuggingFace/README.md).
+
+
 ## Installation
 
 To get started, clone this repository:
