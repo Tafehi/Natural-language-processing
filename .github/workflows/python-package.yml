@@ -25,10 +25,8 @@ jobs:
 
       - name: Debug Environment Variables
         run: |
-          echo "TF_VAR_ENVIRONMENT: $TF_VAR_ENVIRONMENT"
           echo "AWS_ACCESS_KEY_ID: $AWS_ACCESS_KEY_ID"
-          echo "AWS_SECRET_ACCESS_KEY: $AWS_SECRET_ACCESS_KEY"
-          echo "AWS_DEFAULT_REGION: $AWS_DEFAULT_REGION"
+          echo "AWS_DEFAULT_REGION: $AWS_DEFAULT_REGION ---> ${{ secrets.AWS_DEFAULT_REGION }}"
 
       - name: Select or Create Terraform Workspace
         run: |
