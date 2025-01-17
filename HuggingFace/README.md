@@ -42,19 +42,24 @@ The whole pipeline is illustrated as ![git_pipeline](git_pipeline.png)
 ## Login to HuggingFace
  ```bash
 pip install huggingface_hub
+```
 
 # You already have it if you installed transformers or datasets
 
-
+ ```bash
 huggingface-cli login
+```
 
+ ```bash
 # Log in using a token from huggingface.co/settings/tokens
 # Create a model or dataset repo from the CLI if needed
+```
 
+ ```bash
 huggingface-cli repo create repo_name --type {model, dataset, space}
 ```
 
-### Clone your model, dataset or Space locally
+# Clone your model, dataset or Space locally
 
  ```bash
 # Make sure you have git-lfs installed
